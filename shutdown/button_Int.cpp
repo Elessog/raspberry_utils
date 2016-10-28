@@ -78,7 +78,8 @@ void active_on_pushed(void)
     if (*is_shutdown_engaged)
     {
         sync();
-        exit(EXIT_SUCCESS);
+        execl("/sbin/shutdown","now");
+        //exit(EXIT_SUCCESS);
         //reboot(LINUX_REBOOT_CMD_POWER_OFF);
     }
     printf("Shutdown cancelled !!!\n");

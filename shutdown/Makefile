@@ -80,7 +80,6 @@ export MKDIR_P = mkdir -p
 
 all: $(EXECUTABLE) stats
 
-
 # Builds the intergration test, requires the whole system to be built before
 
 #  Create the directories needed
@@ -109,6 +108,12 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 #####################################################################
 # Tool Rules
+
+install: all
+	@echo Installing service file
+	@cp $(OUTPUT_DIR)/shutdown_button.service /etc/systemd/system/
+	@systemctl enable shutdown_button.service
+	@echo DONE
 
 stats:$(EXECUTABLE)
 	@echo Final executable size:

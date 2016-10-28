@@ -1,0 +1,13 @@
+[Unit]
+Description=Power-off on button
+
+[Service]
+Type=simple
+ExecStart=/opt/mycodes/shutdown/shutdown_on_button.run
+User=root
+RestartSec=5
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
