@@ -10,6 +10,7 @@
 
 #define BtnPin    7
 #define LedPin    0
+#define TIME_DELAY 10
 
 int *is_shutdown_engaged;
 int button_pipe[2];
@@ -39,6 +40,7 @@ void myBtnISR(void)
   printf("Button is considered pushed\n");
   if (*is_shutdown_engaged){
       *is_shutdown_engaged=0;
+      printf("Preparing cancelling ...\n");
   }
   else
   {
@@ -51,7 +53,7 @@ void active_on_pushed(void)
 {
 
     int light=1;
-    int counter = 20;
+    int counter = TIME_DELAY;
     fd_set pdset;
     FD_ZERO(&pdset);
     FD_SET(button_pipe[0], &pdset);
@@ -64,22 +66,30 @@ void active_on_pushed(void)
     *is_shutdown_engaged = 1;
 
     digitalWrite(LedPin, 1);
-    printf("Shutdown is engaged you have 10 seconds to stop it\n");
+    printf("Shutdown is engaged you have %d seconds to stop it\n",TIME_DELAY);
 
     while(counter-- && *is_shutdown_engaged)
     {
         delay(1000);
         light=!light;
         digitalWrite(LedPin,light);
+        printf("Count %d Value shutdown %d\n",counter,*is_shutdown_engaged);
+        fflush(stdout);
     }
 
     digitalWrite(LedPin,0);
 
     if (*is_shutdown_engaged)
     {
+        printf("Shutdown engaging !!!!\n");
+        fflush(stdout);
         sync();
-        execl("/sbin/shutdown","now");
-        //exit(EXIT_SUCCESS);
+        if (execl("/sbin/shutdown","shutdown","now")==-1)
+        {
+             perror("execl");
+             exit(EXIT_FAILURE);
+        }
+        exit(EXIT_SUCCESS);
         //reboot(LINUX_REBOOT_CMD_POWER_OFF);
     }
     printf("Shutdown cancelled !!!\n");
@@ -108,7 +118,7 @@ int main(void)
 	}
 
 	pinMode(LedPin, OUTPUT);
-        digitalWrite(LedPin, 0);
+        digitalWrite(LedPin, 1);
 	while(1)
            active_on_pushed();
 
