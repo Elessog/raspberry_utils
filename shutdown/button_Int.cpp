@@ -5,6 +5,10 @@
 #include <sys/reboot.h>
 #include <malloc.h>
 #include <stdlib.h>
+#include <syslog.h>
+#include <string.h>
+#include <errno.h>
+
 
 #include "Timer.h"
 
@@ -67,6 +71,7 @@ void active_on_pushed(void)
 
     digitalWrite(LedPin, 1);
     printf("Shutdown is engaged you have %d seconds to stop it\n",TIME_DELAY);
+    syslog(LOG_NOTICE,"Shutdown process engaged\n");
 
     while(counter-- && *is_shutdown_engaged)
     {
@@ -77,16 +82,18 @@ void active_on_pushed(void)
         fflush(stdout);
     }
 
-    digitalWrite(LedPin,0);
+    digitalWrite(LedPin,1);
 
     if (*is_shutdown_engaged)
     {
         printf("Shutdown engaging !!!!\n");
+        syslog(LOG_NOTICE,"Shutdown now proceeding\n");
         fflush(stdout);
         sync();
         if (execl("/sbin/shutdown","shutdown","now")==-1)
         {
              perror("execl");
+             syslog(LOG_ERR,"Shutdown Error : %s\n",strerror(errno));
              exit(EXIT_FAILURE);
         }
         exit(EXIT_SUCCESS);
@@ -101,6 +108,8 @@ int main(void)
 
         is_shutdown_engaged =(int*) malloc(sizeof(int));
         *is_shutdown_engaged = 0;
+        setlogmask(LOG_UPTO(LOG_NOTICE));
+        openlog ("shutdown_on_button_log", LOG_CONS|LOG_PID|LOG_NDELAY, LOG_LOCAL1);
 
         timer = Timer();
 
@@ -109,11 +118,13 @@ int main(void)
 
 	if(wiringPiSetup() == -1){ //when initialize wiring failed,print messageto screen
 		printf("setup wiringPi failed !");
+                syslog(LOG_ERR,"Error setup wiringPi Failed\n");
 		return 1; 
 	}
 
         if(wiringPiISR(BtnPin, INT_EDGE_FALLING, myBtnISR)){
 		printf("setup ISR failed !");
+                syslog(LOG_ERR,"Error setup ISR Failed\n");
 		return 1;
 	}
 
