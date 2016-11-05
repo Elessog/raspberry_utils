@@ -63,7 +63,7 @@ export OBJECT_FILE = $(BUILD_DIR)/objects.tmp
 export CFLAGS = -Wall -g -o2
 export CPPFLAGS = -g -Wall -pedantic -Werror -std=c++14
 
-export LIBS =
+export LIBS = -lreadline
 
 C_TOOLCHAIN = 1
 CC = gcc

@@ -4,6 +4,9 @@
 #include <sys/stat.h>
 #include <regex>
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 int file_rename(const std::string& folder_path,const std::string& oldname,const std::string& new_name)
 {
     int result;
@@ -19,12 +22,16 @@ std::string get_folder()
 {
     std::string folder_string;
     struct stat sb;
+    char *inpt;
+
 
     std::cout<< "Enter folder name default is current"<<std::endl;
-    std::getline(std::cin,folder_string);
+    inpt = readline("Folder: ");
+    add_history(inpt);
+    folder_string= inpt;
 
     if (!folder_string.size())
-        folder_string = std::string("./");
+        folder_string = "./";
     else
     {
         if (*(--folder_string.end())!='/')
