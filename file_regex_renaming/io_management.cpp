@@ -27,8 +27,14 @@ std::string get_folder()
 
     std::cout<< "Enter folder name default is current"<<std::endl;
     inpt = readline("Folder: ");
-    add_history(inpt);
     folder_string= inpt;
+    if (folder_string=="quit")
+    {
+       return folder_string;
+    }
+    add_history(inpt);
+    append_history(1,NULL);
+
 
     if (!folder_string.size())
         folder_string = "./";
@@ -108,12 +114,35 @@ std::string get_season()
 std::regex get_regex_for_files()
 {
     std::string regex_string;
+    std::string answer;
+    char *input;
+
     std::cout<<"Possible regex phrases :\n";
     std::cout<<"for clss1e3.hd72_300mbfilms.com.mkv it would be : \n";
-    std::cout<<"\t[.*]([0-9]{1,2})e?([0-9]{1,2})[.*]\n";
+    std::cout<<"\t.*([0-9]{1,2})[eE]?([0-9]{1,2}).*\n";
     std::cout<<"Parenthesis allow getting the number ";
-    std::cout<<"Enter regex String: "<<std::endl;
-    std::getline(std::cin,regex_string);
+    std::cout<<"Choose a regex string: "<<std::endl;
+    std::cout<<"\t1)\t.*([0-9]{1,2})[eE]([0-9]{1,2}).*\n";
+    std::cout<<"\t2)\t.*([0-9]{1})([0-9]{2}).*\n";
+    std::cout<<"\t3)\tEnter your own regex\n";
+    std::cout<<"Choice > ";
+
+    std::getline(std::cin,answer);
+
+    switch(std::stoi(answer))
+    {
+    case 1:
+        regex_string=".*([0-9]{1,2})[eE]([0-9]{1,2}).*";
+        break;
+    case 2:
+        regex_string=".*([0-9]{1})([0-9]{2}).*";
+        break;
+    default:
+        input = readline("\nRegex > ");
+        add_history(input);
+        append_history(1,NULL);
+        regex_string=input;
+    }
 
     std::regex source;
     try
@@ -123,19 +152,19 @@ std::regex get_regex_for_files()
     catch ( std::regex_error & e )
     {
         ///////////////
-        std::cerr<<"Error in regex"<<std::endl;
+        std::cerr<<"\nError in regex"<<std::endl;
         return get_regex_for_files();
     }
     catch ( std::out_of_range & e )
     {
         ///////////////
-        std::cerr<<"Error in regex"<<std::endl;
+        std::cerr<<"\nError in regex"<<std::endl;
         return get_regex_for_files();
     }
     catch ( std::runtime_error & e )
     {
         ///////////////
-        std::cerr<<"Error in regex"<<std::endl;
+        std::cerr<<"\nError in regex"<<std::endl;
         return get_regex_for_files();
     }
     return source;

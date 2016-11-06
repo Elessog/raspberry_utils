@@ -7,7 +7,7 @@
 #include "file_management.h"
 #include "io_management.h"
 
-FileManager::FileManager():extension_file(".*[.](avi|AVI|mkv|MKV|flv|FLV|mp4|MP4)$")
+FileManager::FileManager():extension_file(".*[.](avi|AVI|mkv|MKV|flv|FLV|mp4|MP4|srt|SRT)$")
 {}
 
 int FileManager::get_files()
@@ -33,6 +33,7 @@ int FileManager::get_files()
 
 int FileManager::set_folder_path(std::string path_to_folder)
 {
+    list_files.clear();
     folder_path = path_to_folder;
     return 1;
 }
