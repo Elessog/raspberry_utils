@@ -129,7 +129,7 @@ void FileManager::automated_renaming()
         {
             std::string answer;
             std::cerr<<it<<"  does not match regex expression\n";
-            std::cerr<<"Enter your replacement"<<std::endl;
+            std::cerr<<"Enter your replacement\n > ";
             std::getline(std::cin,answer);
             file_rename(folder_path,it,answer);
         }
@@ -158,7 +158,7 @@ void FileManager::show_renaming()
 
         new_string=base_name+" S"+season_number+"E"+episode_number+"."+extension;
 
-        std::cout<<it<<" wll be replaced by ";
+        std::cout<<it<<" will be replaced by ";
         std::cout<<new_string<<std::endl;
 
         if (!forced)
@@ -177,7 +177,7 @@ void FileManager::show_renaming()
                         file_rename(folder_path,it,new_string);
                     else
                     {
-                        std::cout<<"Enter your replacement"<<std::endl;
+                        std::cout<<"Enter your replacement\n > ";
                         std::getline(std::cin,answer);
                         file_rename(folder_path,it,answer);
                     }
@@ -233,7 +233,7 @@ void FileManager::manual_show_renaming()
                         file_rename(folder_path,it,new_string);
                     else
                     {
-                        std::cout<<"Enter your replacement"<<std::endl;
+                        std::cout<<"Enter your replacement\n > ";
                         std::getline(std::cin,answer);
                         file_rename(folder_path,it,answer);
                     }
@@ -255,7 +255,7 @@ void FileManager::manual_renaming()
 
     for(const auto& it : list_files)
     {
-        std::cout<<"Enter your replacement"<<std::endl;
+        std::cout<<"Enter your replacement > ";
         std::getline(std::cin,answer);
         file_rename(folder_path,it,answer);
     }

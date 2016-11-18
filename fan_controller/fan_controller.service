@@ -1,0 +1,13 @@
+[Unit]
+Description=Fan controller
+
+[Service]
+Type=simple
+ExecStart=/opt/mycodes/fan_controller/fan_controller.run
+User=root
+RestartSec=5
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
